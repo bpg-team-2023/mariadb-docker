@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  mariadb:
+    image: mariadb:10.3
+    container_name: mariadb-production
+    networks:
+      mariadb_network:
+        ipv4_address: 172.18.0.3
+    environment:
+      MYSQL_ROOT_PASSWORD: your-password  # Root Password 
+      MYSQL_DATABASE: your-database-name  # Database name
+      MYSQL_USER: your-username           # username
+      MYSQL_PASSWORD: your-user-password  # Password
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    ports:
+      - "3307:3306"  # Mapping internal port 3306 to external port 3307
+    restart: always
+
+networks:
+  mariadb_network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.18.0.0/16
+
+volumes:
+  mariadb_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /opt/mariadb_data  # changing the path on you host machine
+
